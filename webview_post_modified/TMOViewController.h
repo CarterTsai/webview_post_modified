@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TMOViewController : UIViewController
+@interface TMOViewController : UIViewController <UIWebViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
 
 @end
