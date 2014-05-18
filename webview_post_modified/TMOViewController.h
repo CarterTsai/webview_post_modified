@@ -11,5 +11,8 @@
 @interface TMOViewController : UIViewController <UIWebViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property Boolean authenticated;
+@property NSURLConnection *urlConnection;
+@property NSMutableURLRequest *_request;
 
 @end
