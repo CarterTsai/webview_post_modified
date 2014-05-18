@@ -20,7 +20,7 @@
     [super viewDidLoad];
 	// Loading http://localhost:8880
 	self.webView.delegate = self;
-	NSURL *url = [NSURL URLWithString: @"http://localhost:8880"];
+	NSURL *url = [NSURL URLWithString: @"https://localhost:8800"];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL: url];
     [request setHTTPMethod: @"GET"];
 	webView.scalesPageToFit = YES;
