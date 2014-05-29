@@ -21,9 +21,36 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Loading https://localhost
+	
+	//
+	currentMaxAccelX = 0;
+    currentMaxAccelY = 0;
+    currentMaxAccelZ = 0;
+	
+    currentMaxRotX = 0;
+    currentMaxRotY = 0;
+    currentMaxRotZ = 0;
+	
+	self.motionManager = [[CMMotionManager alloc] init];
+    self.motionManager.accelerometerUpdateInterval = .2;
+    self.motionManager.gyroUpdateInterval = .2;
+	
+    [self.motionManager startAccelerometerUpdatesToQueue:[NSOperationQueue currentQueue]
+						withHandler:^(CMAccelerometerData  *accelerometerData, NSError *error) {
+							[self outputAccelertionData:accelerometerData.acceleration];
+								if(error){
+									NSLog(@"%@", error);
+								}
+						}];
+	
+    [self.motionManager startGyroUpdatesToQueue:[NSOperationQueue currentQueue]
+						withHandler:^(CMGyroData *gyroData, NSError *error) {
+							[self outputRotationData:gyroData.rotationRate];
+						}];
+	
+	// Loading https://localhost on WebView
 	self.webView.delegate = self;
-	NSURL *url = [NSURL URLWithString: @"https://localhost"];
+	NSURL *url = [NSURL URLWithString: @"https://www.google.com"];
     _request = [[NSMutableURLRequest alloc]initWithURL: url];
     [_request setHTTPMethod: @"GET"];
 	webView.scalesPageToFit = YES;
@@ -105,6 +132,50 @@
 - (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 {
     return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+}
+
+-(void)outputAccelertionData:(CMAcceleration)acceleration
+{
+	if(fabs(acceleration.x) > fabs(currentMaxAccelX))
+	{
+		currentMaxAccelX = acceleration.x;
+	}
+	if(fabs(acceleration.y) > fabs(currentMaxAccelY))
+	{
+		currentMaxAccelY = acceleration.y;
+	}
+	if(fabs(acceleration.z) > fabs(currentMaxAccelZ))
+	{
+		currentMaxAccelZ = acceleration.z;
+	}
+	
+	NSLog(@"%@", [NSString stringWithFormat:@" %.2f",currentMaxAccelX]);
+	NSLog(@"%@", [NSString stringWithFormat:@" %.2f",currentMaxAccelY]);
+	NSLog(@"%@", [NSString stringWithFormat:@" %.2f",currentMaxAccelZ]);
+	
+}
+-(void)outputRotationData:(CMRotationRate)rotation
+{
+	
+	if(fabs(rotation.x) > fabs(currentMaxRotX))
+	{
+		currentMaxRotX = rotation.x;
+	}
+	
+	if(fabs(rotation.y) > fabs(currentMaxRotY))
+	{
+		currentMaxRotY = rotation.y;
+	}
+	
+	if(fabs(rotation.z) > fabs(currentMaxRotZ))
+	{
+		currentMaxRotZ = rotation.z;
+	}
+	
+	NSLog(@"%@", [NSString stringWithFormat:@" %.2f",currentMaxRotX]);
+	NSLog(@"%@", [NSString stringWithFormat:@" %.2f",currentMaxRotY]);
+	NSLog(@"%@", [NSString stringWithFormat:@" %.2f",currentMaxRotZ]);
+	
 }
 
 @end

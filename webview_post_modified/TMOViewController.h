@@ -7,6 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreMotion/CoreMotion.h>
+
+double currentMaxAccelX;
+double currentMaxAccelY;
+double currentMaxAccelZ;
+double currentMaxRotX;
+double currentMaxRotY;
+double currentMaxRotZ;
 
 @interface TMOViewController : UIViewController <UIWebViewDelegate>
 
@@ -14,5 +22,6 @@
 @property Boolean authenticated;
 @property NSURLConnection *urlConnection;
 @property NSMutableURLRequest *_request;
+@property (strong, nonatomic) CMMotionManager *motionManager;
 
 @end
