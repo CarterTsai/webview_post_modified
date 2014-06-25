@@ -21,6 +21,7 @@
 		F27D17B51928AC9D00E50E6E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F27D17971928AC9D00E50E6E /* UIKit.framework */; };
 		F27D17BD1928AC9D00E50E6E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F27D17BB1928AC9D00E50E6E /* InfoPlist.strings */; };
 		F27D17BF1928AC9D00E50E6E /* webview_post_modifiedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F27D17BE1928AC9D00E50E6E /* webview_post_modifiedTests.m */; };
+		F2C1E30B1937EF1000861C03 /* WebViewJavascriptBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F2C1E30A1937EF1000861C03 /* WebViewJavascriptBridge.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,8 @@
 		F27D17BA1928AC9D00E50E6E /* webview_post_modifiedTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "webview_post_modifiedTests-Info.plist"; sourceTree = "<group>"; };
 		F27D17BC1928AC9D00E50E6E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F27D17BE1928AC9D00E50E6E /* webview_post_modifiedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = webview_post_modifiedTests.m; sourceTree = "<group>"; };
+		F2C1E3091937EF0300861C03 /* WebViewJavascriptBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WebViewJavascriptBridge.h; path = ../../../WebViewJavascriptBridge/WebViewJavascriptBridge/WebViewJavascriptBridge.h; sourceTree = "<group>"; };
+		F2C1E30A1937EF1000861C03 /* WebViewJavascriptBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WebViewJavascriptBridge.m; path = ../../../WebViewJavascriptBridge/WebViewJavascriptBridge/WebViewJavascriptBridge.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +115,8 @@
 		F27D17991928AC9D00E50E6E /* webview_post_modified */ = {
 			isa = PBXGroup;
 			children = (
+				F2C1E30A1937EF1000861C03 /* WebViewJavascriptBridge.m */,
+				F2C1E3091937EF0300861C03 /* WebViewJavascriptBridge.h */,
 				F27D17A21928AC9D00E50E6E /* TMOAppDelegate.h */,
 				F27D17A31928AC9D00E50E6E /* TMOAppDelegate.m */,
 				F27D17A51928AC9D00E50E6E /* Main.storyboard */,
@@ -251,6 +256,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F27D17AA1928AC9D00E50E6E /* TMOViewController.m in Sources */,
+				F2C1E30B1937EF1000861C03 /* WebViewJavascriptBridge.m in Sources */,
 				F27D17A01928AC9D00E50E6E /* main.m in Sources */,
 				F27D17A41928AC9D00E50E6E /* TMOAppDelegate.m in Sources */,
 			);
@@ -457,6 +463,7 @@
 				F27D17C41928AC9D00E50E6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F27D17C51928AC9D00E50E6E /* Build configuration list for PBXNativeTarget "webview_post_modifiedTests" */ = {
 			isa = XCConfigurationList;
@@ -465,6 +472,7 @@
 				F27D17C71928AC9D00E50E6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

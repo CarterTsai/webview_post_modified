@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
+#import "WebViewJavascriptBridge.h"
 
 double currentMaxAccelX;
 double currentMaxAccelY;
@@ -23,5 +24,8 @@ double currentMaxRotZ;
 @property NSURLConnection *urlConnection;
 @property NSMutableURLRequest *_request;
 @property (strong, nonatomic) CMMotionManager *motionManager;
+@property WebViewJavascriptBridge* bridge;
+
+- (IBAction)sned:(id)sender;
 
 @end

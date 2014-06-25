@@ -22,7 +22,7 @@
 {
     [super viewDidLoad];
 	
-	//
+	// gyro and accelerometer init
 	currentMaxAccelX = 0;
     currentMaxAccelY = 0;
     currentMaxAccelZ = 0;
@@ -47,16 +47,41 @@
 						withHandler:^(CMGyroData *gyroData, NSError *error) {
 							[self outputRotationData:gyroData.rotationRate];
 						}];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+	if (_bridge) { return; }
+	
+	NSLog(@"viewWillAppear");
+	// WebViewJavascriptBridge
+	[WebViewJavascriptBridge enableLogging];
+	
+	_bridge = [WebViewJavascriptBridge bridgeForWebView:webView webViewDelegate:self handler:^(id data, WVJBResponseCallback responseCallback) {
+        NSLog(@"ObjC received message from JS: %@", data);
+        responseCallback(@"Response for message from ObjC");
+    }];
+    
+    [_bridge registerHandler:@"testObjcCallback" handler:^(id data, WVJBResponseCallback responseCallback) {
+        NSLog(@"testObjcCallback called: %@", data);
+        responseCallback(@"Response from testObjcCallback");
+    }];
+    
+    [_bridge send:@"A string sent from ObjC before Webview has loaded." responseCallback:^(id responseData) {
+        NSLog(@"objc got response! %@", responseData);
+    }];
+    
+    [_bridge callHandler:@"testJavascriptHandler" data:@{ @"foo":@"before ready" }];
 	
 	// Loading https://localhost on WebView
 	self.webView.delegate = self;
-	NSURL *url = [NSURL URLWithString: @"https://www.google.com"];
+	NSURL *url = [NSURL URLWithString: @"http://localhost:8880"];
     _request = [[NSMutableURLRequest alloc]initWithURL: url];
     [_request setHTTPMethod: @"GET"];
 	webView.scalesPageToFit = YES;
     //[request setHTTPBody: [body dataUsingEncoding: NSUTF8StringEncoding]];
     [webView loadRequest: _request];
-
+	
+	[_bridge send:@"A string sent from ObjC after Webview has loaded."];
 }
 
 - (void)didReceiveMemoryWarning
@@ -65,6 +90,17 @@
     // Dispose of any resources that can be recreated.
 }
 
+static NSString *JSHandler;
+#define CocoaJSHandler          @"mpAjaxHandler"
+
++ (void)initialize {
+    JSHandler = [NSString stringWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ajax_handler" withExtension:@"js"] encoding:NSUTF8StringEncoding error:nil];
+}
+
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+	NSLog(@"WebView Start!!");
+    [webView stringByEvaluatingJavaScriptFromString:JSHandler];
+}
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSMutableURLRequest *)request
  navigationType:(UIWebViewNavigationType)navigationType
@@ -76,6 +112,8 @@
 		[urlConnection start];
 		return NO;
 	}
+	
+	NSLog(@"scheme %@", [request URL]);
 	NSString* newStr = [[NSString alloc] initWithData:request.HTTPBody
 								     encoding:NSUTF8StringEncoding];
 	NSLog(@"%@",newStr);
@@ -178,4 +216,10 @@
 	
 }
 
+- (IBAction)sned:(id)sender {
+	NSLog(@"Hello World");
+	[_bridge send:@"A string sent from ObjC to JS" responseCallback:^(id response) {
+        NSLog(@"sendMessage got response: %@", response);
+    }];
+}
 @end
