@@ -1,0 +1,67 @@
+There are two parts to make this work: a JavaScript handler and UIWebView delegate methods. In JavaScript, we can modify prototype methods to trigger events when an AJAX request is created. With our UIWebView delegate, we can capture these events.
+
+JavaScript Handler
+
+We need to be notified when an AJAX request is made. I found the solution here.
+
+In our case, to make the code work, I put the following JavaScript in a resource called ajax_handler.js which is bundled with my app.
+
+var s_ajaxListener = new Object();
+s_ajaxListener.tempOpen = XMLHttpRequest.prototype.open;
+s_ajaxListener.tempSend = XMLHttpRequest.prototype.send;
+s_ajaxListener.callback = function () {
+    window.location='mpAjaxHandler://' + this.url;
+};
+
+XMLHttpRequest.prototype.open = function(a,b) {
+  if (!a) var a='';
+  if (!b) var b='';
+  s_ajaxListener.tempOpen.apply(this, arguments);
+  s_ajaxListener.method = a;  
+  s_ajaxListener.url = b;
+  if (a.toLowerCase() == 'get') {
+    s_ajaxListener.data = b.split('?');
+    s_ajaxListener.data = s_ajaxListener.data[1];
+  }
+}
+
+XMLHttpRequest.prototype.send = function(a,b) {
+  if (!a) var a='';
+  if (!b) var b='';
+  s_ajaxListener.tempSend.apply(this, arguments);
+  if(s_ajaxListener.method.toLowerCase() == 'post')s_ajaxListener.data = a;
+  s_ajaxListener.callback();
+}
+What this will actually do is change the location of the browser to some made up URL scheme (in this case,mpAjaxHandle) with info about the request made. Don't worry, our delegate with catch this and the location won't change.
+
+UIWebView Delegate
+
+First, we need to read our JavaScript file. I suggest doing storing it in a static variable. I'm in the habit of using +initialize.
+
+static NSString *JSHandler;
+
++ (void)initialize {
+    JSHandler = [[NSString stringWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ajax_handler" withExtension:@"js"] encoding:NSUTF8StringEncoding error:nil] retain];
+}
+Next, we want to inject this JavaScript before a page is done loading so we can receive all events.
+
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    [webView stringByEvaluatingJavaScriptFromString:JSHandler];
+}
+Finally, we want to capture the event.
+
+Since the URL Scheme is made up, we don't want to actually follow it. We return NO and all is well.
+
+#define CocoaJSHandler          @"mpAjaxHandler"
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if ([[[request URL] scheme] isEqual:CocoaJSHandler]) {
+        NSString *requestedURLString = [[[request URL] absoluteString] substringFromIndex:[CocoaJSHandler length] + 3];
+
+        NSLog(@"ajax request: %@", requestedURLString);
+        return NO;
+    }
+
+    return YES;
+}
+I created a sample project with the solution but have nowhere to host it. You can message me if you can host it and I'll edit this post accordingly.
